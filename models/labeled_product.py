@@ -50,7 +50,7 @@ class LabeledProduct(models.Model):
     # parent_id = fields.Many2one('product_labeling.labeled_product')
     mark = fields.Char(size=30, string="Маркировка")
     pl_warehouse_id = fields.Many2one('product_labeling.warehouse', string="Склад")
-    profit = fields.Float(string="Прибыль")
+    profit = fields.Float(string="Прибыль", compute='_compute_profit')
     pl_act_ids = fields.One2many('product_labeling.act', inverse_name='pl_labeled_product_id')
     pl_move_ids = fields.One2many('product_labeling.move', 'pl_labeled_product_id')
 
@@ -67,4 +67,14 @@ class LabeledProduct(models.Model):
         for record in records:
             record.mark = record.pl_product_id.id
         return records
+
+    @api.depends('pl_move_ids')
+    def _compute_profit(self):
+        for record in self:
+            profit = 0
+            for move in record.pl_move_ids:
+                if move.parent_act_state == 'confirmed':
+                    profit += move.debit
+                    profit -= move.credit
+            record.profit = profit
 

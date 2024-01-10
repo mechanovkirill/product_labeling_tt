@@ -35,7 +35,7 @@ class PLAct(models.Model):
             raise UserError('Укажите количество единиц товара')
 
         if self.pl_operation_type_id.name == 'Покупка':
-            self._purchase_act_confirmation(self)
+            return self._purchase_act_confirmation(self)
 
     def _purchase_act_confirmation(self, act):
         if not act.pl_product_id:
@@ -43,17 +43,34 @@ class PLAct(models.Model):
         if not act.to_pl_warehouse_id:
             raise UserError('Укажите склад в который перемещен товар')
 
-        labeled_product = self.env['product_labeling.labeled_product'].create({
-            'pl_product_id': act.pl_product_id.id,
-            'mark': act.pl_product_id.id,
-            'quantity': act.quantity,
-            'pl_warehouse_id': act.to_pl_warehouse_id.id,
-            'state': act.pl_operation_type_id.product_state,
-            'name': f"{act.pl_product_id.name} #{act.pl_product_id.id}"
-        })
+        labeled_product = self.env['product_labeling.labeled_product'].search([
+            ('pl_product_id', '=', act.pl_product_id.id),
+            ('pl_warehouse_id', '=', act.to_pl_warehouse_id.id),
+            ('state', '=', act.pl_operation_type_id.product_state),
+        ], limit=1)
+        if not labeled_product:
+            labeled_product = self.env['product_labeling.labeled_product'].create({
+                'pl_product_id': act.pl_product_id.id,
+                'mark': act.pl_product_id.id,
+                'quantity': act.quantity,
+                'pl_warehouse_id': act.to_pl_warehouse_id.id,
+                'state': act.pl_operation_type_id.product_state,
+                'name': f"{act.pl_product_id.name} #{act.pl_product_id.id}"
+            })
+        else:
+            labeled_product.quantity += act.quantity
+
         self.pl_labeled_product_id = labeled_product.id
         for move in act.pl_move_ids:
             move.pl_labeled_product_id = labeled_product.id
 
         act.state = 'confirmed'
+        return {
+            'name': 'Act',
+            'type': 'ir.actions.act_window',
+            'res_model': 'product_labeling.act',
+            'view_mode': 'form',
+            'res_id': act.id,
+            'target': 'new',
+        }
 

@@ -12,8 +12,8 @@ class PLMove(models.Model):
     date = fields.Date(related='pl_act_id.date')
 
     name = fields.Char()
-    debit = fields.Float()
-    credit = fields.Float()
+    debit = fields.Float(string='Прибыль')
+    credit = fields.Float(string='Расход')
 
     def action_open_pl_move(self):
         return {
