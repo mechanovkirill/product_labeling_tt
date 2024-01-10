@@ -1,3 +1,4 @@
+import datetime
 from odoo import models, fields, api
 
 
@@ -8,6 +9,29 @@ class LabelingProduct(models.Model):
 
     name = fields.Char()
     description = fields.Text()
+
+    def action_pl_buy(self):
+        last_purchase_act_number = self.env['product_labeling.act'].search(
+            [('type', '=', 'purchase')],
+            limit=1, order='number'
+        ).number + 1
+        if not last_purchase_act_number:
+            last_purchase_act_number = 1
+        year = datetime.date.today().year
+        name = f"Акт приобретения товара #{year}/000{last_purchase_act_number}"
+        return {
+            'name': 'Purchase of product',
+            'type': 'ir.actions.act_window',
+            'res_model': 'product_labeling.act',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_pl_product_id': self.id,
+                'default_type': 'purchase',
+                'default_name': name,
+                'default_number': last_purchase_act_number,
+            }
+        }
 
 
 

@@ -7,21 +7,25 @@
             <field name="arch" type="xml">
                 <form string="product_labeling.act">
                     <sheet>
+                        <header>
+                             <field name="state" widget="statusbar" statusbar_visible="draft, confirmed, canceled"/>
+                        </header>
                         <group>
                             <group>
-                                 <field name="name"/>
-                                 <field name="type"/>
-                                 <field name="pl_product_id"/>
-                                 <field name="pl_labeled_product_id"/>
-                                 <field name="quantity"/>
-                                 <field name="current_pl_warehouse_id"/>
-                                 <field name="to_pl_warehouse_id"/>
-                                <notebook>
-                                    <page name="Expense/Profit">
-                                        <field name="pl_move_ids"/>
-                                    </page>
-                                </notebook>
+                                <field name="date"/>
+                                <field name="name"/>
+                                <field name="type" readonly="1"/>
+                                <field name="pl_product_id" invisible="type != 'purchase'"/>
+                                <field name="pl_labeled_product_id" invisible="type == 'purchase'"/>
+                                <field name="quantity"/>
+                                <field name="current_pl_warehouse_id" invisible="type == 'purchase'"/>
+                                <field name="to_pl_warehouse_id"/>
                             </group>
+                            <notebook>
+                                <page name="Затраты/Приходы">
+                                    <field name="pl_move_ids"/>
+                                </page>
+                            </notebook>
                         </group>
                     </sheet>
                      <div class="oe_chatter">
