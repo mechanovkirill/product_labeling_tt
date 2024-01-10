@@ -13,6 +13,8 @@
 <!--        <menuitem id="menu_lp_purchase" name="Purchase" parent="menu_lp_actions"-->
 <!--                  action="action_pl_buy" sequence="1"/>-->
 
+        <menuitem id="menu_lp_operation_type" name="Operation Types" parent="menu_product_labeling_root"
+                  action="action_open_product_labeling_operation_type" sequence="3"/>
         <menuitem id="menu_lp_act" name="Acts" parent="menu_product_labeling_root"
                   action="action_open_product_labeling_act" sequence="4"/>
         <menuitem id="menu_lp_warehouse" name="Warehouses" parent="menu_product_labeling_root"

@@ -1,5 +1,6 @@
 import datetime
 from odoo import models, fields
+from odoo.exceptions import UserError
 
 
 class PLAct(models.Model):
@@ -14,7 +15,7 @@ class PLAct(models.Model):
     type = fields.Selection([('purchase', 'Purchase'), ('move', 'Move'), ('sale', 'Sale')], string="Тип операции")
     pl_product_id = fields.Many2one('product_labeling.product', string="Товар")
     pl_labeled_product_id = fields.Many2one('product_labeling.labeled_product', string="Товар")
-    quantity = fields.Integer(string="Количество")
+    quantity = fields.Integer(string="Количество", required=True)
 
     state = fields.Selection(
         [('draft', 'Draft'), ('confirmed', 'Confirmed'), ('canceled', 'Canceled')], default='draft')
@@ -24,3 +25,16 @@ class PLAct(models.Model):
 
     def action_reset_to_draft(self):
         pass # if not sold
+
+    def action_confirm_act(self):
+        if not self.name:
+            raise UserError('Документ должен иметь имя')
+
+        if self.type == 'purchase':
+            self._purchase_act_confirmation(self)
+
+    def _purchase_act_confirmation(self, act):
+        if not act.pl_product_id:
+            raise UserError('Выберите приобретаемый товар')
+
+        # act.state = 'confirmed'

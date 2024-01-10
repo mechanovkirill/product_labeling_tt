@@ -14,6 +14,7 @@
         'views/lp_warehouse_views.xml',
         'views/pl_act_views.xml',
         'views/pl_move_views.xml',
+        'views/lp_operation_type_views.xml',
         'views/menus.xml',
     ],
     # only loaded in demonstration mode

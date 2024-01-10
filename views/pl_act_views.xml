@@ -8,9 +8,10 @@
                 <form string="product_labeling.act">
                     <sheet>
                         <header>
+                             <button name="action_confirm_act" type="object" string="Confirm" class="oe_highlight" invisible="state != 'draft'"/>
                              <field name="state" widget="statusbar" statusbar_visible="draft, confirmed, canceled"/>
                         </header>
-                        <group>
+                        <group readonly="state != 'draft'">
                             <group>
                                 <field name="date"/>
                                 <field name="name"/>
