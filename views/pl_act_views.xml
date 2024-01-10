@@ -11,16 +11,16 @@
                              <button name="action_confirm_act" type="object" string="Confirm" class="oe_highlight" invisible="state != 'draft'"/>
                              <field name="state" widget="statusbar" statusbar_visible="draft, confirmed, canceled"/>
                         </header>
-                        <group readonly="state != 'draft'">
-                            <group>
+                        <group>
+                            <group readonly="state == 'confirmed'">
                                 <field name="operation_type" invisible="1"/>
                                 <field name="date"/>
                                 <field name="name"/>
                                 <field name="pl_operation_type_id"/>
-                                <field name="pl_product_id" invisible="operation_type != 'Покупка'"/>
-                                <field name="pl_labeled_product_id" invisible="operation_type == 'Покупка'"/>
+                                <field name="pl_product_id" invisible="operation_type != 'Покупка' or state != 'draft'"/>
+                                <field name="pl_labeled_product_id" invisible="operation_type == 'Покупка' and state == 'draft'"/>
                                 <field name="quantity"/>
-                                <field name="current_pl_warehouse_id" invisible="operation_type == 'Покупка'"/>
+                                <field name="current_pl_warehouse_id" string="Текущий склад" invisible="operation_type == 'Покупка'"/>
                                 <field name="to_pl_warehouse_id"/>
                             </group>
 
@@ -28,6 +28,7 @@
                                 <page name="Приходы/Расходы">
                                     <field name="pl_move_ids">
                                         <tree editable="bottom" string="Приходы/Расходы">
+<!--                                            <button name="action_open_pl_move" type="object" string="Open" class="oe_highlight"/>-->
                                             <field name="name"/>
                                             <field name="debit"/>
                                             <field name="credit"/>

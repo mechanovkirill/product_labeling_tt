@@ -49,6 +49,7 @@ class PLAct(models.Model):
             'pl_warehouse_id': act.to_pl_warehouse_id.id,
             'state': act.pl_operation_type_id.product_state
         })
+        self.pl_labeled_product_id = labeled_product.id
         for move in act.pl_move_ids:
             move.pl_labeled_product_id = labeled_product.id
 

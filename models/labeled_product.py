@@ -49,7 +49,6 @@ class LabeledProduct(models.Model):
     # parent_id = fields.Many2one('product_labeling.labeled_product')
     mark = fields.Char(size=30, default='id')
     pl_warehouse_id = fields.Many2one('product_labeling.warehouse')
-    expenses = fields.Float()
     profit = fields.Float()
     pl_act_ids = fields.One2many('product_labeling.act', inverse_name='pl_labeled_product_id')
 

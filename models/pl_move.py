@@ -14,3 +14,13 @@ class PLMove(models.Model):
     debit = fields.Float()
     credit = fields.Float()
 
+    def action_open_pl_move(self):
+        return {
+            'name': 'Move',
+            'type': 'ir.actions.act_window',
+            'res_model': 'product_labeling.move',
+            'view_mode': 'form',
+            'res_id': self.id,
+            'target': 'new',
+        }
+
