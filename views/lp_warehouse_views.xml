@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="product_labeling_warehouse_view_form" model="ir.ui.view">
+            <field name="name">product_labeling_warehouse.form</field>
+            <field name="model">product_labeling.warehouse</field>
+            <field name="arch" type="xml">
+                <form string="product_labeling.warehouse">
+                    <sheet>
+                        <field name="name" placeholder="Enter the Product Name"
+                               style="font-size:200%; margin-bottom:10px"/>
+<!--                        <group>-->
+<!--                            <group>-->
+<!--                                 <field name="description"/>-->
+<!--                            </group>-->
+<!--                        </group>-->
+                    </sheet>
+<!--                     <div class="oe_chatter">-->
+<!--                            <field name="message_follower_ids" widget="mail_followers"/>-->
+<!--                            <field name="message_ids" widget="mail_thread"/>-->
+<!--                        </div>-->
+                </form>
+            </field>
+        </record>
+
+        <record id="product_labeling_warehouse_view_tree" model="ir.ui.view">
+            <field name="name">product_labeling_warehouse.tree</field>
+            <field name="model">product_labeling.warehouse</field>
+            <field name="arch" type="xml">
+                <tree string="warehouse">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_open_product_labeling_warehouse" model="ir.actions.act_window">
+            <field name="name">Warehouses</field>
+            <field name="res_model">product_labeling.warehouse</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</odoo>
