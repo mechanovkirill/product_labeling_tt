@@ -1,1 +1,1 @@
-# product_labeling_tt
+## Odoo demo module for product labeling

@@ -6,7 +6,7 @@ class LabelingProduct(models.Model):
     _description = 'Product'
     _inherit = 'mail.thread'
 
-    name = fields.Char(required=True)
+    name = fields.Char()
     description = fields.Text()
 
 

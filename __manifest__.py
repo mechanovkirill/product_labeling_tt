@@ -9,6 +9,7 @@
     'depends': ['base', 'contacts'],
     'data': [
         'security/ir.model.access.csv',
+        'views/lp_product_views.xml',
         'views/labeled_product_views.xml',
         'views/menus.xml',
     ],
