@@ -11,10 +11,10 @@ class LabelingProduct(models.Model):
     description = fields.Text()
 
     def action_pl_buy(self):
-        last_purchase_act_number = self.env['product_labeling.act'].search(
+        last_purchase_act_number = int(self.env['product_labeling.act'].search(
             [('type', '=', 'purchase')],
-            limit=1, order='number'
-        ).number + 1
+            limit=1, order='number desc'
+        ).number) + 1
         if not last_purchase_act_number:
             last_purchase_act_number = 1
         year = datetime.date.today().year
@@ -45,7 +45,7 @@ class LabeledProduct(models.Model):
     state = fields.Selection([('storage', 'Storage'), ('sold', 'Sold')], default='storage')
     quantity = fields.Integer()
     # parent_id = fields.Many2one('product_labeling.labeled_product')
-    mark = fields.Char(size=30)
+    mark = fields.Char(size=30, default='id')
     pl_warehouse_id = fields.Many2one('product_labeling.warehouse')
     expenses = fields.Float(digits=2)
     profit = fields.Float(digits=2)
