@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="operation_purchase" model="product_labeling.operation_type">
+            <field name="name">Приобретение товара</field>
+            <field name="product_state">Хранение</field>
+        </record>
+        <record id="operation_move" model="product_labeling.operation_type">
+            <field name="name">Перемещение</field>
+            <field name="product_state">Хранение</field>
+        </record>
+        <record id="operation_sale" model="product_labeling.operation_type">
+            <field name="name">Продажа</field>
+            <field name="product_state">Продан</field>
+        </record>
+    </data>
+</odoo>

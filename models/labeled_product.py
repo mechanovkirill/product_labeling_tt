@@ -11,14 +11,16 @@ class LabelingProduct(models.Model):
     description = fields.Text()
 
     def action_pl_buy(self):
+        operation_type = self.env['product_labeling.operation_type'].search([('name', '=', 'Приобретение товара')])
         last_purchase_act_number = int(self.env['product_labeling.act'].search(
-            [('type', '=', 'purchase')],
+            [('pl_operation_type_id', '=', operation_type.id)],
             limit=1, order='number desc'
         ).number) + 1
         if not last_purchase_act_number:
             last_purchase_act_number = 1
         year = datetime.date.today().year
         name = f"Акт приобретения товара #{year}/000{last_purchase_act_number}"
+
         return {
             'name': 'Purchase of product',
             'type': 'ir.actions.act_window',
@@ -27,7 +29,7 @@ class LabelingProduct(models.Model):
             'target': 'new',
             'context': {
                 'default_pl_product_id': self.id,
-                'default_type': 'purchase',
+                'default_pl_operation_type_id': operation_type.id,
                 'default_name': name,
                 'default_number': last_purchase_act_number,
             }
@@ -42,7 +44,7 @@ class LabeledProduct(models.Model):
 
     pl_product_id = fields.Many2one('product_labeling.product', string='Product')
     description = fields.Text(related='pl_product_id.description')
-    state = fields.Selection([('storage', 'Storage'), ('sold', 'Sold')], default='storage')
+    state = fields.Char()
     quantity = fields.Integer()
     # parent_id = fields.Many2one('product_labeling.labeled_product')
     mark = fields.Char(size=30, default='id')

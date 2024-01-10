@@ -15,11 +15,14 @@
                             <group>
                                 <field name="date"/>
                                 <field name="name"/>
-                                <field name="type" readonly="1"/>
-                                <field name="pl_product_id" invisible="type != 'purchase'"/>
-                                <field name="pl_labeled_product_id" invisible="type == 'purchase'"/>
+                                <field name="pl_operation_type_id"/>
+<!--                                <field name="pl_product_id" invisible="type != 'purchase'"/>-->
+                                <field name="pl_product_id"/>
+<!--                                <field name="pl_labeled_product_id" invisible="type == 'purchase'"/>-->
+                                <field name="pl_labeled_product_id"/>
                                 <field name="quantity"/>
-                                <field name="current_pl_warehouse_id" invisible="type == 'purchase'"/>
+<!--                                <field name="current_pl_warehouse_id" invisible="type == 'purchase'"/>-->
+                                <field name="current_pl_warehouse_id"/>
                                 <field name="to_pl_warehouse_id"/>
                             </group>
 
@@ -50,7 +53,8 @@
             <field name="arch" type="xml">
                 <tree string="act">
                     <field name="name"/>
-                    <field name="type"/>
+                    <field name="pl_labeled_product_id"/>
+                    <field name="pl_operation_type_id"/>
                     <field name="pl_labeled_product_id"/>
                     <field name="quantity"/>
                     <field name="state"/>
