@@ -4,6 +4,7 @@ from odoo import models, fields
 class PLAct(models.Model):
     _name = 'product_labeling.act'
     _description = 'Act'
+    _inherit = 'mail.thread'
 
     name = fields.Char()
     type = fields.Selection([('purchase', 'Purchase'), ('move', 'Move'), ('sale', 'Sale')])

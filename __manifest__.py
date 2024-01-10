@@ -12,6 +12,7 @@
         'views/lp_product_views.xml',
         'views/labeled_product_views.xml',
         'views/lp_warehouse_views.xml',
+        'views/pl_act_views.xml',
         'views/menus.xml',
     ],
     # only loaded in demonstration mode

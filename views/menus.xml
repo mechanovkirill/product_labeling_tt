@@ -11,6 +11,8 @@
               action="action_open_product_labeling_labeled_product" sequence="1"/>
         <menuitem id="menu_lp_actions" name="Actions" parent="menu_product_labeling_root" sequence="2"/>
 
+        <menuitem id="menu_lp_act" name="Acts" parent="menu_product_labeling_root"
+                  action="action_open_product_labeling_act" sequence="4"/>
         <menuitem id="menu_lp_warehouse" name="Warehouses" parent="menu_product_labeling_root"
                   action="action_open_product_labeling_warehouse" sequence="5"/>
         <menuitem id="menu_lp_product" name="Products" parent="menu_product_labeling_root"
