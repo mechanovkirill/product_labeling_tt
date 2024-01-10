@@ -9,6 +9,7 @@ class PLMove(models.Model):
     pl_labeled_product_id = fields.Many2one('product_labeling.labeled_product')
     pl_act_id = fields.Many2one('product_labeling.act')
     parent_act_state = fields.Selection(related='pl_act_id.state')
+    date = fields.Date(related='pl_act_id.date')
 
     name = fields.Char()
     debit = fields.Float()

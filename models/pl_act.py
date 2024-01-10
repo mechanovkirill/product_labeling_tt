@@ -45,9 +45,11 @@ class PLAct(models.Model):
 
         labeled_product = self.env['product_labeling.labeled_product'].create({
             'pl_product_id': act.pl_product_id.id,
+            'mark': act.pl_product_id.id,
             'quantity': act.quantity,
             'pl_warehouse_id': act.to_pl_warehouse_id.id,
-            'state': act.pl_operation_type_id.product_state
+            'state': act.pl_operation_type_id.product_state,
+            'name': f"{act.pl_product_id.name} #{act.pl_product_id.id}"
         })
         self.pl_labeled_product_id = labeled_product.id
         for move in act.pl_move_ids:

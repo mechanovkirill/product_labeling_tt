@@ -21,6 +21,17 @@
                                 <field name="state" readonly="1"/>
                             </group>
                             <notebook>
+                                <page string="Приходы/Расходы">
+                                    <field name="pl_move_ids" readonly="1">
+                                         <tree string="Приходы/Расходы">
+<!--                                            <button name="action_open_pl_move" type="object" string="Open" class="oe_highlight"/>-->
+                                            <field name="date"/>
+                                            <field name="name"/>
+                                            <field name="debit"/>
+                                            <field name="credit"/>
+                                        </tree>
+                                    </field>
+                                </page>
                                 <page string="Акты">
                                     <field name="pl_act_ids" readonly="1"/>
                                 </page>
@@ -44,6 +55,11 @@
             <field name="arch" type="xml">
                 <tree string="product_labeling">
                     <field name="pl_product_id"/>
+                    <field name="mark"/>
+                    <field name="quantity"/>
+                    <field name="pl_warehouse_id"/>
+                    <field name="state"/>
+                    <field name="profit"/>
                 </tree>
             </field>
         </record>

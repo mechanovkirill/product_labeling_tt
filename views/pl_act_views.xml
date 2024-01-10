@@ -12,21 +12,21 @@
                              <field name="state" widget="statusbar" statusbar_visible="draft, confirmed, canceled"/>
                         </header>
                         <group>
-                            <group readonly="state == 'confirmed'">
+                            <group>
                                 <field name="operation_type" invisible="1"/>
-                                <field name="date"/>
-                                <field name="name"/>
-                                <field name="pl_operation_type_id"/>
-                                <field name="pl_product_id" invisible="operation_type != 'Покупка' or state != 'draft'"/>
-                                <field name="pl_labeled_product_id" invisible="operation_type == 'Покупка' and state == 'draft'"/>
-                                <field name="quantity"/>
-                                <field name="current_pl_warehouse_id" string="Текущий склад" invisible="operation_type == 'Покупка'"/>
-                                <field name="to_pl_warehouse_id"/>
+                                <field name="date" readonly="state == 'confirmed'"/>
+                                <field name="name" readonly="state == 'confirmed'"/>
+                                <field name="pl_operation_type_id" readonly="state == 'confirmed'"/>
+                                <field name="pl_product_id" invisible="operation_type != 'Покупка' or state != 'draft'" readonly="state == 'confirmed'"/>
+                                <field name="pl_labeled_product_id" invisible="operation_type == 'Покупка' and state == 'draft'" readonly="state == 'confirmed'"/>
+                                <field name="quantity" readonly="state == 'confirmed'"/>
+                                <field name="current_pl_warehouse_id" string="Текущий склад" invisible="operation_type == 'Покупка'" readonly="state == 'confirmed'"/>
+                                <field name="to_pl_warehouse_id" readonly="state == 'confirmed'"/>
                             </group>
 
                             <notebook>
                                 <page name="Приходы/Расходы">
-                                    <field name="pl_move_ids">
+                                    <field name="pl_move_ids" readonly="state == 'confirmed'">
                                         <tree editable="bottom" string="Приходы/Расходы">
 <!--                                            <button name="action_open_pl_move" type="object" string="Open" class="oe_highlight"/>-->
                                             <field name="name"/>
@@ -54,7 +54,6 @@
                     <field name="name"/>
                     <field name="pl_labeled_product_id"/>
                     <field name="pl_operation_type_id"/>
-                    <field name="pl_labeled_product_id"/>
                     <field name="quantity"/>
                     <field name="state"/>
                 </tree>

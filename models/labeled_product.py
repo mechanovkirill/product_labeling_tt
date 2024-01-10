@@ -42,20 +42,22 @@ class LabeledProduct(models.Model):
     _description = 'Labeled product'
     _inherit = 'mail.thread'
 
-    pl_product_id = fields.Many2one('product_labeling.product', string='Product')
+    name = fields.Char(string="Наименование товара")
+    pl_product_id = fields.Many2one('product_labeling.product', string='Наименование товара')
     description = fields.Text(related='pl_product_id.description')
-    state = fields.Char()
-    quantity = fields.Integer()
+    state = fields.Char(string="Текущий статус")
+    quantity = fields.Integer(string="Количество")
     # parent_id = fields.Many2one('product_labeling.labeled_product')
-    mark = fields.Char(size=30, default='id')
-    pl_warehouse_id = fields.Many2one('product_labeling.warehouse')
-    profit = fields.Float()
+    mark = fields.Char(size=30, string="Маркировка")
+    pl_warehouse_id = fields.Many2one('product_labeling.warehouse', string="Склад")
+    profit = fields.Float(string="Прибыль")
     pl_act_ids = fields.One2many('product_labeling.act', inverse_name='pl_labeled_product_id')
+    pl_move_ids = fields.One2many('product_labeling.move', 'pl_labeled_product_id')
 
     def name_get(self):
         res = []
         for record in self:
-            name = f"{record.product.name} # {record.mark}"
+            name = f"{record.pl_product_id.name} #{record.mark}"
             res.append((record.id, name))
         return res
 
@@ -63,6 +65,6 @@ class LabeledProduct(models.Model):
     def create(self, vals_list):
         records = super().create(vals_list)
         for record in records:
-            record.mark = record.id
+            record.mark = record.pl_product_id.id
         return records
 
