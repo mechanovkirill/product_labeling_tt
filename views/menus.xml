@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+    <!--        <menuitem id="menu_tours_model" name="Tours"-->
+    <!--                  groups="tours_module.tours_module_management,tours_module.tours_module_booking_management,tours_module.tours_module_hr_manager,account.group_account_manager"-->
+    <!--                  web_icon="tours_module,static/description/icon.png"   sequence="1"-->
+    <!--        />-->
+    <menuitem id="menu_product_labeling_root" name="Product labeling" sequence="1"/>
+    <menuitem id="menu_product" name="Products" parent="menu_product_labeling_root"
+              action="action_open_product_labeling_product" sequence="1"/>
+    </data>
+</odoo>
