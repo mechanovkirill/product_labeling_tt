@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <record id="operation_purchase" model="product_labeling.operation_type">
-            <field name="name">Приобретение товара</field>
+            <field name="name">Покупка</field>
             <field name="product_state">Хранение</field>
         </record>
         <record id="operation_move" model="product_labeling.operation_type">

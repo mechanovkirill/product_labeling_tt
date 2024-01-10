@@ -1,5 +1,5 @@
 import datetime
-from odoo import models, fields
+from odoo import models, fields, api
 from odoo.exceptions import UserError
 
 
@@ -12,7 +12,9 @@ class PLAct(models.Model):
     date = fields.Date(default=datetime.date.today(), required=True, string="Дата документа")
     number = fields.Char(size=50)
 
-    pl_operation_type_id = fields.Many2one('product_labeling.operation_type')
+    pl_operation_type_id = fields.Many2one('product_labeling.operation_type', string='Тип операции')
+    operation_type = fields.Char(related='pl_operation_type_id.name')
+
     pl_product_id = fields.Many2one('product_labeling.product', string="Товар")
     pl_labeled_product_id = fields.Many2one('product_labeling.labeled_product', string="Товар")
     quantity = fields.Integer(string="Количество", required=True)
@@ -24,7 +26,7 @@ class PLAct(models.Model):
     pl_move_ids = fields.One2many('product_labeling.move', inverse_name='pl_act_id')
 
     def action_reset_to_draft(self):
-        pass # if not sold
+        pass  # if not sold
 
     def action_confirm_act(self):
         if not self.name:
@@ -32,7 +34,7 @@ class PLAct(models.Model):
         if not self.quantity:
             raise UserError('Укажите количество единиц товара')
 
-        if self.type == 'purchase':
+        if self.pl_operation_type_id.name == 'Покупка':
             self._purchase_act_confirmation(self)
 
     def _purchase_act_confirmation(self, act):
@@ -41,4 +43,14 @@ class PLAct(models.Model):
         if not act.to_pl_warehouse_id:
             raise UserError('Укажите склад в который перемещен товар')
 
-        # act.state = 'confirmed'
+        labeled_product = self.env['product_labeling.labeled_product'].create({
+            'pl_product_id': act.pl_product_id.id,
+            'quantity': act.quantity,
+            'pl_warehouse_id': act.to_pl_warehouse_id.id,
+            'state': act.pl_operation_type_id.product_state
+        })
+        for move in act.pl_move_ids:
+            move.pl_labeled_product_id = labeled_product.id
+
+        act.state = 'confirmed'
+

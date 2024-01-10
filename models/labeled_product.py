@@ -11,7 +11,7 @@ class LabelingProduct(models.Model):
     description = fields.Text()
 
     def action_pl_buy(self):
-        operation_type = self.env['product_labeling.operation_type'].search([('name', '=', 'Приобретение товара')])
+        operation_type = self.env['product_labeling.operation_type'].search([('name', '=', 'Покупка')])
         last_purchase_act_number = int(self.env['product_labeling.act'].search(
             [('pl_operation_type_id', '=', operation_type.id)],
             limit=1, order='number desc'
@@ -49,8 +49,8 @@ class LabeledProduct(models.Model):
     # parent_id = fields.Many2one('product_labeling.labeled_product')
     mark = fields.Char(size=30, default='id')
     pl_warehouse_id = fields.Many2one('product_labeling.warehouse')
-    expenses = fields.Float(digits=2)
-    profit = fields.Float(digits=2)
+    expenses = fields.Float()
+    profit = fields.Float()
     pl_act_ids = fields.One2many('product_labeling.act', inverse_name='pl_labeled_product_id')
 
     def name_get(self):
@@ -59,4 +59,11 @@ class LabeledProduct(models.Model):
             name = f"{record.product.name} # {record.mark}"
             res.append((record.id, name))
         return res
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        for record in records:
+            record.mark = record.id
+        return records
 

@@ -13,16 +13,14 @@
                         </header>
                         <group readonly="state != 'draft'">
                             <group>
+                                <field name="operation_type" invisible="1"/>
                                 <field name="date"/>
                                 <field name="name"/>
                                 <field name="pl_operation_type_id"/>
-<!--                                <field name="pl_product_id" invisible="type != 'purchase'"/>-->
-                                <field name="pl_product_id"/>
-<!--                                <field name="pl_labeled_product_id" invisible="type == 'purchase'"/>-->
-                                <field name="pl_labeled_product_id"/>
+                                <field name="pl_product_id" invisible="operation_type != 'Покупка'"/>
+                                <field name="pl_labeled_product_id" invisible="operation_type == 'Покупка'"/>
                                 <field name="quantity"/>
-<!--                                <field name="current_pl_warehouse_id" invisible="type == 'purchase'"/>-->
-                                <field name="current_pl_warehouse_id"/>
+                                <field name="current_pl_warehouse_id" invisible="operation_type == 'Покупка'"/>
                                 <field name="to_pl_warehouse_id"/>
                             </group>
 
