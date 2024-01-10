@@ -78,3 +78,33 @@ class LabeledProduct(models.Model):
                     profit -= move.credit
             record.profit = profit
 
+    def action_move_labeled_product(self):
+        return self._open_act_window_to_create_new(self.id, 'Перемещение')
+
+    def action_sale_labeled_product(self):
+        return self._open_act_window_to_create_new(self.id, 'Продажа')
+
+    def _open_act_window_to_create_new(self, self_id: int, operation: str) -> dict:
+        operation_type = self.env['product_labeling.operation_type'].search([('name', '=', operation)])
+        last_act_number = int(self.env['product_labeling.act'].search(
+            [('pl_operation_type_id', '=', operation_type.id)],
+            limit=1, order='number desc'
+        ).number) + 1
+        if not last_act_number:
+            last_act_number = 1
+        year = datetime.date.today().year
+        name = f"Акт продажи #{year}/000{last_act_number}"
+
+        return {
+            'name': 'Sale the product',
+            'type': 'ir.actions.act_window',
+            'res_model': 'product_labeling.act',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_pl_labeled_product_id': self_id,
+                'default_pl_operation_type_id': operation_type.id,
+                'default_name': name,
+                'default_number': last_act_number,
+            }
+        }

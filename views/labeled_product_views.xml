@@ -7,6 +7,12 @@
             <field name="arch" type="xml">
                 <form string="product_labeling_labeled_product">
                     <sheet>
+                        <header>
+                            <button name="action_move_labeled_product" type="object" string="Перемещение"
+                                    class="oe_highlight"/>
+                            <button name="action_sale_labeled_product" type="object" string="Продажа"
+                                    class="oe_highlight"/>
+                        </header>
                         <field name="pl_product_id"
                                style="font-size:200%; margin-bottom:10px"
                                readonly="1"/>
@@ -23,8 +29,8 @@
                             <notebook>
                                 <page string="Приходы/Расходы">
                                     <field name="pl_move_ids" readonly="1">
-                                         <tree string="Приходы/Расходы">
-<!--                                            <button name="action_open_pl_move" type="object" string="Open" class="oe_highlight"/>-->
+                                        <tree string="Приходы/Расходы">
+                                            <!--                                            <button name="action_open_pl_move" type="object" string="Open" class="oe_highlight"/>-->
                                             <field name="date"/>
                                             <field name="name"/>
                                             <field name="debit"/>
@@ -60,6 +66,8 @@
                     <field name="pl_warehouse_id"/>
                     <field name="state"/>
                     <field name="profit"/>
+                    <button name="action_move_labeled_product" type="object" string="Перемещение" class="oe_highlight"/>
+                    <button name="action_sale_labeled_product" type="object" string="Продажа" class="oe_highlight"/>
                 </tree>
             </field>
         </record>
