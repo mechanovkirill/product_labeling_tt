@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="product_labeling_labeled_product_view_form" model="ir.ui.view">
-            <field name="name">product_labeling_labeled_product.form</field>
-            <field name="model">product_labeling.labeled_product</field>
+        <record id="product_labeling_product_view_form" model="ir.ui.view">
+            <field name="name">product_labeling_product.form</field>
+            <field name="model">product_labeling.product</field>
             <field name="arch" type="xml">
-                <form string="product_labeling_labeled_product">
+                <form string="product_labeling.product">
                     <sheet>
-                        <field name="pl_product_id"
+                        <field name="name" placeholder="Enter the Product Name"
                                style="font-size:200%; margin-bottom:10px"/>
                         <group>
                             <group>
@@ -23,19 +23,20 @@
             </field>
         </record>
 
-        <record id="product_labeling_labeled_product_view_tree" model="ir.ui.view">
-            <field name="name">product_labeling_labeled_product.tree</field>
-            <field name="model">product_labeling.labeled_product</field>
+        <record id="product_labeling_product_view_tree" model="ir.ui.view">
+            <field name="name">product_labeling_product.tree</field>
+            <field name="model">product_labeling.product</field>
             <field name="arch" type="xml">
                 <tree string="product_labeling">
-                    <field name="pl_product_id"/>
+                    <field name="name"/>
+                    <field name="description"/>
                 </tree>
             </field>
         </record>
 
-        <record id="action_open_product_labeling_labeled_product" model="ir.actions.act_window">
-            <field name="name">Labeled Products</field>
-            <field name="res_model">product_labeling.labeled_product</field>
+        <record id="action_open_product_labeling_product" model="ir.actions.act_window">
+            <field name="name">Products</field>
+            <field name="res_model">product_labeling.product</field>
             <field name="view_mode">tree,form</field>
         </record>
     </data>
