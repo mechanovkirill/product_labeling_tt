@@ -33,15 +33,26 @@ class PLAct(models.Model):
             raise UserError('Документ должен иметь имя')
         if not self.quantity:
             raise UserError('Укажите количество единиц товара')
+        if not self.to_pl_warehouse_id:
+            raise UserError('Укажите склад в который перемещен товар')
 
         if self.pl_operation_type_id.name == 'Покупка':
-            return self._purchase_act_confirmation(self)
+            self._purchase_act_confirmation(self)
+            return self.return_act_window_new(self.id)
+
+        if not self.current_pl_warehouse_id:
+            raise UserError('Укажите товар текущее местоположение товара')
+        if not self.pl_labeled_product_id:
+            raise UserError('Выберите товар')
+        if self.quantity > self.pl_labeled_product_id.quantity:
+            raise UserError('Недостаточное количество товара')
+
+        self._act_confirmation(self)
+        return self.return_act_window_new(self.id)
 
     def _purchase_act_confirmation(self, act):
         if not act.pl_product_id:
             raise UserError('Выберите приобретаемый товар')
-        if not act.to_pl_warehouse_id:
-            raise UserError('Укажите склад в который перемещен товар')
 
         labeled_product = self.env['product_labeling.labeled_product'].search([
             ('pl_product_id', '=', act.pl_product_id.id),
@@ -55,7 +66,7 @@ class PLAct(models.Model):
                 'quantity': act.quantity,
                 'pl_warehouse_id': act.to_pl_warehouse_id.id,
                 'state': act.pl_operation_type_id.product_state,
-                'name': f"{act.pl_product_id.name} #{act.pl_product_id.id}"
+                'name': f"{act.pl_product_id.name} #{act.pl_product_id.id} {act.to_pl_warehouse_id}"
             })
         else:
             labeled_product.quantity += act.quantity
@@ -65,12 +76,25 @@ class PLAct(models.Model):
             move.pl_labeled_product_id = labeled_product.id
 
         act.state = 'confirmed'
+
+    def _act_confirmation(self, act):
+        if act.quantity == act.pl_labeled_product_id.quantity:
+            act.pl_labeled_product_id.pl_warehouse_id = act.to_pl_warehouse_id
+            act.pl_labeled_product_id.state = act.pl_operation_type_id.product_state
+            for move in act.pl_move_ids:
+                move.pl_labeled_product_id = act.pl_labeled_product_id.id
+        elif act.quantity < act.pl_labeled_product_id.quantity:
+            pass
+
+        act.state = 'confirmed'
+
+    @staticmethod
+    def return_act_window_new(id_):
         return {
             'name': 'Act',
             'type': 'ir.actions.act_window',
             'res_model': 'product_labeling.act',
             'view_mode': 'form',
-            'res_id': act.id,
+            'res_id': id_,
             'target': 'new',
         }
-

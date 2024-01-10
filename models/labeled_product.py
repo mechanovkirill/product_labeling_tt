@@ -57,7 +57,7 @@ class LabeledProduct(models.Model):
     def name_get(self):
         res = []
         for record in self:
-            name = f"{record.pl_product_id.name} #{record.mark}"
+            name = f"{record.pl_product_id.name} #{record.mark} {record.pl_warehouse_id}"
             res.append((record.id, name))
         return res
 
@@ -79,12 +79,12 @@ class LabeledProduct(models.Model):
             record.profit = profit
 
     def action_move_labeled_product(self):
-        return self._open_act_window_to_create_new(self.id, 'Перемещение')
+        return self._open_act_window_to_create_new(self, 'Перемещение')
 
     def action_sale_labeled_product(self):
-        return self._open_act_window_to_create_new(self.id, 'Продажа')
+        return self._open_act_window_to_create_new(self, 'Продажа')
 
-    def _open_act_window_to_create_new(self, self_id: int, operation: str) -> dict:
+    def _open_act_window_to_create_new(self, self_, operation: str) -> dict:
         operation_type = self.env['product_labeling.operation_type'].search([('name', '=', operation)])
         last_act_number = int(self.env['product_labeling.act'].search(
             [('pl_operation_type_id', '=', operation_type.id)],
@@ -93,7 +93,8 @@ class LabeledProduct(models.Model):
         if not last_act_number:
             last_act_number = 1
         year = datetime.date.today().year
-        name = f"Акт продажи #{year}/000{last_act_number}"
+        name = f"Акт продажи #{year}/000{last_act_number}" if operation == 'Продажа' \
+            else f"Акт перемещения #{year}/000{last_act_number}"
 
         return {
             'name': 'Sale the product',
@@ -102,9 +103,11 @@ class LabeledProduct(models.Model):
             'view_mode': 'form',
             'target': 'new',
             'context': {
-                'default_pl_labeled_product_id': self_id,
+                'default_pl_labeled_product_id': self_.id,
                 'default_pl_operation_type_id': operation_type.id,
                 'default_name': name,
+                'default_quantity': self_.quantity,
+                'default_current_pl_warehouse_id': self_.pl_warehouse_id.id,
                 'default_number': last_act_number,
             }
         }
