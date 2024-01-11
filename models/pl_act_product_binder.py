@@ -23,12 +23,12 @@ class PLActProductBinder(models.Model):
 
     debit = fields.Float(string='Прибыль', compute='_compute_binder_debit_credit')
     credit = fields.Float(string='Расход')
-    pl_move_ids = fields.One2many('product_labeling.move', inverse_name='pl_act_product_binder')
+    pl_move_ids = fields.One2many('product_labeling.move', inverse_name='pl_act_product_binder_ids')
 
     def name_get(self):
         res = []
         for record in self:
-            name = f"{record.pl_product_id.name if record.pl_product_id else record.pl_labeled_product_id.name}"
+            name = f"111111{record.pl_product_id.name if record.pl_product_id else record.pl_labeled_product_id.name}"
             res.append((record.id, name))
         return res
 

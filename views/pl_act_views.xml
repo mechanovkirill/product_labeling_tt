@@ -18,8 +18,8 @@
                             <group>
                                 <field name="operation_type" invisible="1"/>
                                 <field name="date" readonly="state == 'confirmed'"/>
-                                <field name="name" readonly="state == 'confirmed'"/>
                                 <field name="pl_operation_type_id" readonly="state == 'confirmed'"/>
+                                <field name="name" readonly="state == 'confirmed'"/>
                                 <field name="current_pl_warehouse_id" string="Текущий склад"
                                        invisible="operation_type == 'Покупка'" readonly="state == 'confirmed'"/>
                                 <field name="to_pl_warehouse_id" readonly="state == 'confirmed'"/>
@@ -28,7 +28,7 @@
 
                             <notebook>
                                 <page name="Товары">
-                                    <field name="pl_act_product_binder" readonly="state == 'confirmed'"/>
+                                    <field name="pl_act_product_binder_ids" readonly="state == 'confirmed'"/>
                                 </page>
                                 <page name="Приходы/Расходы" invisible="state == 'draft'">
                                     <field name="pl_move_ids" readonly="state == 'confirmed'">
@@ -57,8 +57,9 @@
                 <tree string="act">
                     <field name="name"/>
                     <field name="pl_operation_type_id"/>
-                    <field name="pl_act_product_binder" widget="many2many_tags"/>
+                    <field name="pl_act_product_binder_ids" widget="many2many_tags"/>
                     <field name="state"/>
+                    <field name="number"/>
                 </tree>
             </field>
         </record>

@@ -15,7 +15,7 @@ class PLAct(models.Model):
     pl_operation_type_id = fields.Many2one('product_labeling.operation_type', string='Тип операции')
     operation_type = fields.Char(related='pl_operation_type_id.name')
 
-    pl_act_product_binder = fields.One2many('product_labeling.act_product_binder', 'pl_act_id')
+    pl_act_product_binder_ids = fields.One2many('product_labeling.act_product_binder', 'pl_act_id')
     pl_labeled_product_ids = fields.Many2many('product_labeling.labeled_product', string="Товар")
 
     state = fields.Selection(
@@ -36,12 +36,12 @@ class PLAct(models.Model):
             raise UserError('Документ должен иметь имя')
         if not self.to_pl_warehouse_id:
             raise UserError('Укажите склад в который перемещен товар')
-        if not self.pl_act_product_binder:
+        if not self.pl_act_product_binder_ids:
             raise UserError('Добавьте товары')
 
         if self.pl_operation_type_id.name == 'Покупка':
             self._purchase_act_confirmation(self)
-            return self.return_act_window_new(self.id)
+            return True
 
         if not self.current_pl_warehouse_id:
             raise UserError('Укажите товар текущее местоположение товара')
@@ -59,7 +59,7 @@ class PLAct(models.Model):
         return self.return_act_window_new(self.id)
 
     def _purchase_act_confirmation(self, act):
-        for binder in act.pl_act_product_binder:
+        for binder in act.pl_act_product_binder_ids:
             if not binder.pl_product_id:
                 raise UserError('Выберите приобретаемый товар')
             if not binder.quantity:
@@ -67,7 +67,7 @@ class PLAct(models.Model):
             if not binder.pl_move_ids:
                 raise UserError('Не добавлены значения приходов/расходов для товара')
 
-        for binder in act.pl_act_product_binder:
+        for binder in act.pl_act_product_binder_ids:
             labeled_product = self.env['product_labeling.labeled_product'].create({
                 'pl_product_id': binder.pl_product_id.id,
                 'mark': binder.pl_product_id.id,
@@ -114,17 +114,6 @@ class PLAct(models.Model):
 
         act.state = 'confirmed'
 
-    @staticmethod
-    def return_act_window_new(id_):
-        return {
-            'name': 'Act',
-            'type': 'ir.actions.act_window',
-            'res_model': 'product_labeling.act',
-            'view_mode': 'form',
-            'res_id': id_,
-            'target': 'new',
-        }
-
     @api.onchange('pl_operation_type_id')
     def onchange_pl_operation_type_id(self):
         operation_type = self.pl_operation_type_id
@@ -135,10 +124,14 @@ class PLAct(models.Model):
                     ('state', '=', 'confirmed')
                 ],
                 limit=1, order='number desc'
-            ).number) + 1
+            ).number)
             if not last_act_number:
                 last_act_number = 1
+            else:
+                last_act_number += 1
             year = datetime.date.today().year
             name = f"{operation_type.document_name} #{year}/000{last_act_number}"
             self.name = name
+            print(last_act_number)
+            self.write({'number': last_act_number})
 
