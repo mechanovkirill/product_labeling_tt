@@ -7,4 +7,5 @@ class PLOperationType(models.Model):
 
     name = fields.Char(required=True, string='Название операции')
     product_state = fields.Char(string='Товары к которым будет применена операция будут иметь статус:', required=True)
+    document_name = fields.Char(string='Паттерн имени документа')
 

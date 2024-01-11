@@ -12,6 +12,7 @@
                         <group>
                             <group>
                                  <field name="product_state"/>
+                                 <field name="document_name"/>
                             </group>
                         </group>
                     </sheet>
