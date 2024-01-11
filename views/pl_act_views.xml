@@ -23,6 +23,7 @@
                                 <field name="current_pl_warehouse_id" string="Текущий склад"
                                        invisible="operation_type == 'Покупка'" readonly="state == 'confirmed'"/>
                                 <field name="to_pl_warehouse_id" readonly="state == 'confirmed'"/>
+                                <field name="common_expenses" readonly="state == 'confirmed'"/>
                             </group>
 
                             <notebook>

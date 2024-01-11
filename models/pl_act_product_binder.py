@@ -6,6 +6,7 @@ class PLActProductBinder(models.Model):
     _name = 'product_labeling.act_product_binder'
     _description = 'act_product_binder'
 
+    name = fields.Char(size=50)
     pl_act_id = fields.Many2one('product_labeling.act')
     operation_type = fields.Char(related='pl_act_id.operation_type')
     parent_act_state = fields.Selection(related='pl_act_id.state')
@@ -27,7 +28,7 @@ class PLActProductBinder(models.Model):
     def name_get(self):
         res = []
         for record in self:
-            name = f"{record.pl_product_id if record.pl_product_id else record.pl_labeled_product_id}"
+            name = f"{record.pl_product_id.name if record.pl_product_id else record.pl_labeled_product_id.name}"
             res.append((record.id, name))
         return res
 

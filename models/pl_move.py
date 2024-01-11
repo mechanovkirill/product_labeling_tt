@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import models, fields, api
 
 
 class PLMove(models.Model):
@@ -16,6 +16,14 @@ class PLMove(models.Model):
     name = fields.Char()
     debit = fields.Float(string='Прибыль')
     credit = fields.Float(string='Расход')
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        for record in records:
+            if record.pl_act_product_binder:
+                record.pl_act_id = record.pl_act_product_binder.pl_act_id
+        return records
 
     def action_open_pl_move(self):
         return {

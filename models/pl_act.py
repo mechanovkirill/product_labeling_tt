@@ -16,14 +16,15 @@ class PLAct(models.Model):
     operation_type = fields.Char(related='pl_operation_type_id.name')
 
     pl_act_product_binder = fields.One2many('product_labeling.act_product_binder', 'pl_act_id')
-    # pl_product_id = fields.Many2one('product_labeling.product', string="Товар")
-    pl_labeled_product_id = fields.Many2many('product_labeling.labeled_product', string="Товар")
+    pl_labeled_product_ids = fields.Many2many('product_labeling.labeled_product', string="Товар")
 
     state = fields.Selection(
         [('draft', 'Draft'), ('confirmed', 'Confirmed'), ('canceled', 'Canceled')], default='draft')
 
     current_pl_warehouse_id = fields.Many2one('product_labeling.warehouse', string='Применить для товаров со склада')
     to_pl_warehouse_id = fields.Many2one('product_labeling.warehouse', string='Назначить новый склад')
+
+    common_expenses = fields.Float(string='Общие расходы')
 
     pl_move_ids = fields.One2many('product_labeling.move', inverse_name='pl_act_id')
 
@@ -61,19 +62,25 @@ class PLAct(models.Model):
         for binder in act.pl_act_product_binder:
             if not binder.pl_product_id:
                 raise UserError('Выберите приобретаемый товар')
+            if not binder.quantity:
+                raise UserError('Не указано количество товара')
+            if not binder.pl_move_ids:
+                raise UserError('Не добавлены значения приходов/расходов для товара')
 
+        for binder in act.pl_act_product_binder:
             labeled_product = self.env['product_labeling.labeled_product'].create({
                 'pl_product_id': binder.pl_product_id.id,
                 'mark': binder.pl_product_id.id,
                 'quantity': binder.quantity,
                 'pl_warehouse_id': act.to_pl_warehouse_id.id,
                 'state': act.pl_operation_type_id.product_state,
-                'name': f"{act.pl_product_id.name} #{act.pl_product_id.id} {act.to_pl_warehouse_id.name}"
+                'name': f"{binder.pl_product_id.name} #{binder.pl_product_id.id} {act.to_pl_warehouse_id.name}",
+                'pl_act_ids': [(4, act.id, 0)]
             })
-
-            self.pl_labeled_product_id = [4, labeled_product.id, 0]
-            for move in act.pl_move_ids:
+            binder.pl_labeled_product_id = labeled_product.id
+            for move in binder.pl_move_ids:
                 move.pl_labeled_product_id = labeled_product.id
+                move.quantity = binder.quantity
 
         act.state = 'confirmed'
 
