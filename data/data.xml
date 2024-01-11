@@ -4,14 +4,17 @@
         <record id="operation_purchase" model="product_labeling.operation_type">
             <field name="name">Покупка</field>
             <field name="product_state">Хранение</field>
+            <field name="document_name">Акт приобретения товаров</field>
         </record>
         <record id="operation_move" model="product_labeling.operation_type">
             <field name="name">Перемещение</field>
             <field name="product_state">Хранение</field>
+            <field name="document_name">Акт перемещения товаров</field>
         </record>
         <record id="operation_sale" model="product_labeling.operation_type">
             <field name="name">Продажа</field>
             <field name="product_state">Продан</field>
+            <field name="document_name">Акт продажи</field>
         </record>
     </data>
 </odoo>
