@@ -87,6 +87,12 @@ class LabeledProduct(models.Model):
                 parent_profit = (parent.profit * record.quantity) / parent.quantity
                 profit += parent_profit
 
+            # check if child
+            # children = record.child_ids
+            # if children:
+            #     for child in children:
+            #         profit += child.profit
+
             record.profit = profit
 
     @api.depends('state', 'parent_id', 'pl_warehouse_id')
