@@ -10,6 +10,7 @@ class PLMove(models.Model):
     pl_act_id = fields.Many2one('product_labeling.act')
     parent_act_state = fields.Selection(related='pl_act_id.state')
     date = fields.Date(related='pl_act_id.date')
+    quantity = fields.Integer(related='pl_act_id.quantity', string='Кол-во')
 
     name = fields.Char()
     debit = fields.Float(string='Прибыль')

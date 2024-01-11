@@ -7,6 +7,8 @@
             <field name="arch" type="xml">
                 <form string="product_labeling_labeled_product">
                     <sheet>
+                        <widget name="web_ribbon" title="Отсутствует" bg_color="bg-danger"
+                                invisible="state != 'Товар был разделен'"/>
                         <header>
                             <button name="action_move_labeled_product" type="object" string="Перемещение"
                                     class="oe_highlight"/>
@@ -33,6 +35,7 @@
                                             <!--                                            <button name="action_open_pl_move" type="object" string="Open" class="oe_highlight"/>-->
                                             <field name="date"/>
                                             <field name="name"/>
+                                            <field name="quantity"/>
                                             <field name="debit"/>
                                             <field name="credit"/>
                                         </tree>
@@ -72,9 +75,32 @@
             </field>
         </record>
 
+        <record id="product_labeling_labeled_product_search" model="ir.ui.view">
+            <field name="name">product_labeling.labeled_product.search</field>
+            <field name="model">product_labeling.labeled_product</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="pl_product_id"/>
+                    <field name="state"/>
+                    <field name="quantity"/>
+                    <field name="parent_id"/>
+                    <field name="child_ids"/>
+                    <field name="mark"/>
+                    <field name="pl_warehouse_id"/>
+                    <filter string="Archived" name="active" domain="[('active', '=',False)]"/>
+                    <filter string="Разделенные товары" name="divined" domain="[('state', '=','Товар был разделен')]"/>
+                    <filter string="Проданные товары" name="sold" domain="[('state', '=','Продан')]"/>
+                    <filter string="В наличии" name="current"
+                            domain="[('state', '!=','Продан'),('state', '!=','Товар был разделен')]"/>
+                </search>
+            </field>
+        </record>
+
         <record id="action_open_product_labeling_labeled_product" model="ir.actions.act_window">
             <field name="name">Labeled Products</field>
             <field name="res_model">product_labeling.labeled_product</field>
+            <field name="context">{"search_default_current":1}</field>
             <field name="view_mode">tree,form</field>
         </record>
     </data>

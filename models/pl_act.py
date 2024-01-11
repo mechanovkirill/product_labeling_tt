@@ -25,7 +25,7 @@ class PLAct(models.Model):
     to_pl_warehouse_id = fields.Many2one('product_labeling.warehouse', string='Назначить новый склад')
     pl_move_ids = fields.One2many('product_labeling.move', inverse_name='pl_act_id')
 
-    def action_reset_to_draft(self):
+    def action_reset_act_to_draft(self):
         pass  # if not sold
 
     def action_confirm_act(self):
@@ -45,7 +45,12 @@ class PLAct(models.Model):
         if not self.pl_labeled_product_id:
             raise UserError('Выберите товар')
         if self.quantity > self.pl_labeled_product_id.quantity:
-            raise UserError('Недостаточное количество товара')
+            raise UserError('Недостаточное количество товара в наличии')
+        if self.pl_labeled_product_id.state == 'Товар был разделен':
+            raise UserError(
+                'Данный товар был разделен на другие товары и отсутствует.'
+                'Выберите другой товар.'
+            )
 
         self._act_confirmation(self)
         return self.return_act_window_new(self.id)
@@ -84,7 +89,24 @@ class PLAct(models.Model):
             for move in act.pl_move_ids:
                 move.pl_labeled_product_id = act.pl_labeled_product_id.id
         elif act.quantity < act.pl_labeled_product_id.quantity:
-            pass
+            # create new product
+            labeled_product_new = act.pl_labeled_product_id.copy()
+            labeled_product_new.pl_move_ids = []
+            labeled_product_new.quantity = act.quantity
+            labeled_product_new.pl_warehouse_id = act.to_pl_warehouse_id
+            labeled_product_new.state = act.pl_operation_type_id.product_state
+
+            # create remains product
+            labeled_product_remain = act.pl_labeled_product_id.copy()
+            labeled_product_remain.quantity -= act.quantity
+
+            # update parent product
+            act.pl_labeled_product_id.state = 'Товар был разделен'
+            act.pl_labeled_product_id.pl_warehouse_id = False
+            id_ = act.pl_labeled_product_id.id
+
+            labeled_product_new.parent_id = id_
+            labeled_product_remain.parent_id = id_
 
         act.state = 'confirmed'
 
@@ -98,3 +120,10 @@ class PLAct(models.Model):
             'res_id': id_,
             'target': 'new',
         }
+
+    @api.onchange('pl_labeled_product_id')
+    def onchange_pl_labeled_product_id(self):
+        labeled_prod = self.pl_labeled_product_id
+        if labeled_prod:
+            self.quantity = labeled_prod.quantity
+            self.current_pl_warehouse_id = labeled_prod.pl_warehouse_id

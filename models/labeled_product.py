@@ -42,17 +42,19 @@ class LabeledProduct(models.Model):
     _description = 'Labeled product'
     _inherit = 'mail.thread'
 
+    active = fields.Boolean(default=True)
     name = fields.Char(string="Наименование товара")
     pl_product_id = fields.Many2one('product_labeling.product', string='Наименование товара')
     description = fields.Text(related='pl_product_id.description')
     state = fields.Char(string="Текущий статус")
     quantity = fields.Integer(string="Количество")
-    # parent_id = fields.Many2one('product_labeling.labeled_product')
+    parent_id = fields.Many2one('product_labeling.labeled_product')
+    child_ids = fields.One2many('product_labeling.labeled_product', 'parent_id')
     mark = fields.Char(size=30, string="Маркировка")
     pl_warehouse_id = fields.Many2one('product_labeling.warehouse', string="Склад")
     profit = fields.Float(string="Прибыль", compute='_compute_profit')
     pl_act_ids = fields.One2many('product_labeling.act', inverse_name='pl_labeled_product_id')
-    pl_move_ids = fields.One2many('product_labeling.move', 'pl_labeled_product_id')
+    pl_move_ids = fields.Many2many('product_labeling.move', 'pl_labeled_product_id', compute='_compute_pl_move_ids')
 
     def name_get(self):
         res = []
@@ -72,11 +74,36 @@ class LabeledProduct(models.Model):
     def _compute_profit(self):
         for record in self:
             profit = 0
-            for move in record.pl_move_ids:
+            moves = self.env['product_labeling.move'].search([
+                ('pl_labeled_product_id', '=', record.id)
+            ])
+            for move in moves:
                 if move.parent_act_state == 'confirmed':
                     profit += move.debit
                     profit -= move.credit
+            # check if parent
+            parent = record.parent_id
+            if parent:
+                parent_profit = (parent.profit * record.quantity) / parent.quantity
+                profit += parent_profit
+
             record.profit = profit
+
+    @api.depends('state', 'parent_id', 'pl_warehouse_id')
+    def _compute_pl_move_ids(self):
+        for record in self:
+            moves = []
+            if record.parent_id:
+                parent_moves = record.parent_id.pl_move_ids
+                for m in parent_moves:
+                    moves.append(m.id)
+            self_moves = self.env['product_labeling.move'].search([
+                ('pl_labeled_product_id', '=', record.id)
+            ])
+            for move in self_moves:
+                moves.append(move.id)
+            if record.pl_move_ids != moves:
+                record.pl_move_ids = [(6, 0, moves)]
 
     def action_move_labeled_product(self):
         return self._open_act_window_to_create_new(self, 'Перемещение')

@@ -9,6 +9,7 @@
                     <sheet>
                         <header>
                              <button name="action_confirm_act" type="object" string="Confirm" class="oe_highlight" invisible="state != 'draft'"/>
+                             <button name="action_reset_act_to_draft" type="object" string="Confirm" class="oe_highlight" invisible="state == 'draft'"/>
                              <field name="state" widget="statusbar" statusbar_visible="draft, confirmed, canceled"/>
                         </header>
                         <group>
