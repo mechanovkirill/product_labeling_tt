@@ -57,7 +57,7 @@ class PLAct(models.Model):
         for binder in act.pl_act_product_binder_ids:
             if not binder.pl_product_id:
                 raise UserError('Выберите приобретаемый товар')
-            if not binder.quantity:
+            if binder.quantity == 0:
                 raise UserError('Не указано количество товара')
             if not binder.pl_move_ids:
                 raise UserError('Не добавлены значения приходов/расходов для товара')
@@ -88,6 +88,8 @@ class PLAct(models.Model):
         for binder in act.pl_act_product_binder_ids:
             if not binder.pl_labeled_product_id:
                 raise UserError('Выберите товар')
+            if binder.quantity == 0:
+                raise UserError('Не указано количество товара')
             if binder.quantity > binder.pl_labeled_product_id.quantity:
                 raise UserError('Недостаточное количество товара в наличии')
             if binder.pl_labeled_product_id.state == 'Товар был разделен':
