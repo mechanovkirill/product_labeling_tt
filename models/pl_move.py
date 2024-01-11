@@ -8,7 +8,7 @@ class PLMove(models.Model):
 
     pl_labeled_product_id = fields.Many2one('product_labeling.labeled_product')
     pl_act_id = fields.Many2one('product_labeling.act')
-    pl_act_product_binder_ids = fields.Many2one('product_labeling.act_product_binder')
+    pl_act_product_binder_id = fields.Many2one('product_labeling.act_product_binder')
     parent_act_state = fields.Selection(related='pl_act_id.state')
     date = fields.Date(related='pl_act_id.date')
     quantity = fields.Integer(string='Кол-во')
@@ -21,8 +21,8 @@ class PLMove(models.Model):
     def create(self, vals_list):
         records = super().create(vals_list)
         for record in records:
-            if record.pl_act_product_binder_ids:
-                record.pl_act_id = record.pl_act_product_binder_ids.pl_act_id
+            if record.pl_act_product_binder_id:
+                record.pl_act_id = record.pl_act_product_binder_id.pl_act_id
         return records
 
     def action_open_pl_move(self):

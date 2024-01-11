@@ -24,12 +24,20 @@
                                 <field name="current_pl_warehouse_id" string="Текущий склад"
                                        invisible="operation_type == 'Покупка'" readonly="state == 'confirmed'"/>
                                 <field name="to_pl_warehouse_id" readonly="state == 'confirmed'"/>
-                                <field name="common_expenses" readonly="state == 'confirmed'"/>
                             </group>
 
                             <notebook>
                                 <page name="Товары">
                                     <field name="pl_act_product_binder_ids" readonly="state == 'confirmed'"/>
+                                </page>
+                                <page name="Общие Приходы/Расходы">
+                                    <field name="common_expenses_move_ids" readonly="state == 'confirmed'" widget="one2many">
+                                        <tree editable="bottom" string="Общие Приходы/Расходы">
+                                            <field name="name"/>
+                                            <field name="debit"/>
+                                            <field name="credit"/>
+                                        </tree>
+                                    </field>
                                 </page>
                                 <page name="Приходы/Расходы" invisible="state == 'draft'">
                                     <field name="pl_move_ids" readonly="state == 'confirmed'">
@@ -58,9 +66,8 @@
                 <tree string="act">
                     <field name="name"/>
                     <field name="pl_operation_type_id"/>
-                    <field name="pl_act_product_binder_ids" widget="many2many_tags"/>
+                    <field name="pl_labeled_product_ids" widget="many2many_tags"/>
                     <field name="state"/>
-                    <field name="number"/>
                 </tree>
             </field>
         </record>

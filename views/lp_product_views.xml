@@ -7,9 +7,9 @@
             <field name="arch" type="xml">
                 <form string="product_labeling.product">
                     <sheet>
-                        <header>
-                            <button name="action_pl_buy" type="object" string="Buy" class="oe_highlight"/>
-                        </header>
+<!--                        <header>-->
+<!--                            <button name="action_pl_buy" type="object" string="Buy" class="oe_highlight"/>-->
+<!--                        </header>-->
                         <field name="name" placeholder="Enter the Product Name"
                                style="font-size:200%; margin-bottom:10px"/>
                         <group>
@@ -32,7 +32,7 @@
             <field name="arch" type="xml">
                 <tree string="product_labeling">
                     <field name="name"/>
-                    <button name="action_pl_buy" type="object" string="Buy" class="oe_highlight"/>
+<!--                    <button name="action_pl_buy" type="object" string="Buy" class="oe_highlight"/>-->
                     <field name="description"/>
                 </tree>
             </field>

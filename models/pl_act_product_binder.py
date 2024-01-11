@@ -10,20 +10,28 @@ class PLActProductBinder(models.Model):
     pl_act_id = fields.Many2one('product_labeling.act')
     operation_type = fields.Char(related='pl_act_id.operation_type')
     parent_act_state = fields.Selection(related='pl_act_id.state')
+    parent_act_current_pl_warehouse_id = fields.Many2one('product_labeling.warehouse', related='pl_act_id.current_pl_warehouse_id')
 
     pl_product_id = fields.Many2one('product_labeling.product', string="Приобретение товара")
     pl_labeled_product_id = fields.Many2one(
         'product_labeling.labeled_product', string="Товар в наличии",
-        domain=[
-            ('state', 'not in', ['Товар был разделен', 'Продан']),
-            ('pl_warehouse_id', '=', 'pl_act_id.current_pl_warehouse_id')
-        ]
     )
     quantity = fields.Integer(string="Количество")
 
     debit = fields.Float(string='Прибыль', compute='_compute_binder_debit_credit')
     credit = fields.Float(string='Расход')
-    pl_move_ids = fields.One2many('product_labeling.move', inverse_name='pl_act_product_binder_ids')
+    pl_move_ids = fields.One2many('product_labeling.move', inverse_name='pl_act_product_binder_id')
+
+    @api.onchange('quantity')
+    def onchange_binder_quantity(self):
+        if self.pl_labeled_product_id:
+            if self.quantity > self.pl_labeled_product_id.quantity:
+                raise UserError('Недостаточное количество товара в наличии')
+
+    @api.onchange('pl_labeled_product_id')
+    def onchange_pl_labeled_product_id(self):
+        if self.pl_labeled_product_id:
+            self.quantity = self.pl_labeled_product_id.quantity
 
     def name_get(self):
         res = []

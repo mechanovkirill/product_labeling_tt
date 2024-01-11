@@ -12,6 +12,7 @@
                             <group>
                                 <field name="parent_act_state" invisible="1"/>
                                 <field name="operation_type" invisible="1"/>
+                                <field name="pl_act_id" invisible="1"/>
                                 <field name="pl_product_id"
                                        invisible="operation_type != 'Покупка' or parent_act_state != 'draft'"/>
                                 <field name="pl_labeled_product_id"
@@ -43,9 +44,12 @@
                     <field name="operation_type" invisible="1" optional="hide"/>
                     <field name="parent_act_state" invisible="1" optional="hide"/>
                     <field name="pl_act_id" invisible="1" optional="hide"/>
+                    <field name="parent_act_current_pl_warehouse_id" invisible="1" optional="hide"/>
                     <field name="pl_product_id" invisible="operation_type != 'Покупка' or parent_act_state != 'draft'"/>
                     <field name="pl_labeled_product_id"
-                           invisible="operation_type == 'Покупка' and parent_act_state == 'draft'"/>
+                           invisible="operation_type == 'Покупка' and parent_act_state == 'draft'"
+                           domain="[('state', 'not in', ['Товар был разделен', 'Продан']), ('pl_warehouse_id', '=', parent_act_current_pl_warehouse_id)]"
+                    />
                     <field name="quantity"/>
                     <field name="debit" readonly="1"/>
                     <field name="credit" readonly="1"/>

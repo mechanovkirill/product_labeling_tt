@@ -9,12 +9,12 @@
                     <sheet>
                         <widget name="web_ribbon" title="Отсутствует" bg_color="bg-danger"
                                 invisible="state != 'Товар был разделен'"/>
-                        <header>
-                            <button name="action_move_labeled_product" type="object" string="Перемещение"
-                                    class="oe_highlight"/>
-                            <button name="action_sale_labeled_product" type="object" string="Продажа"
-                                    class="oe_highlight"/>
-                        </header>
+<!--                        <header>-->
+<!--                            <button name="action_move_labeled_product" type="object" string="Перемещение"-->
+<!--                                    class="oe_highlight"/>-->
+<!--                            <button name="action_sale_labeled_product" type="object" string="Продажа"-->
+<!--                                    class="oe_highlight"/>-->
+<!--                        </header>-->
                         <field name="pl_product_id"
                                style="font-size:200%; margin-bottom:10px"
                                readonly="1"/>
@@ -62,15 +62,15 @@
             <field name="name">product_labeling_labeled_product.tree</field>
             <field name="model">product_labeling.labeled_product</field>
             <field name="arch" type="xml">
-                <tree string="product_labeling">
+                <tree string="product_labeling" create="0">
                     <field name="pl_product_id"/>
                     <field name="mark"/>
                     <field name="quantity"/>
                     <field name="pl_warehouse_id"/>
                     <field name="state"/>
                     <field name="profit"/>
-                    <button name="action_move_labeled_product" type="object" string="Перемещение" class="oe_highlight"/>
-                    <button name="action_sale_labeled_product" type="object" string="Продажа" class="oe_highlight"/>
+<!--                    <button name="action_move_labeled_product" type="object" string="Перемещение" class="oe_highlight"/>-->
+<!--                    <button name="action_sale_labeled_product" type="object" string="Продажа" class="oe_highlight"/>-->
                 </tree>
             </field>
         </record>
