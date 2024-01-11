@@ -132,3 +132,21 @@ class PLAct(models.Model):
     #     if labeled_prod:
     #         self.quantity = labeled_prod.quantity
     #         self.current_pl_warehouse_id = labeled_prod.pl_warehouse_id
+
+    @api.onchange('pl_operation_type_id')
+    def onchange_pl_operation_type_id(self):
+        operation_type = self.pl_operation_type_id
+        if operation_type:
+            last_act_number = int(self.env['product_labeling.act'].search(
+                [
+                    ('pl_operation_type_id', '=', operation_type.id),
+                    ('state', '=', 'confirmed')
+                ],
+                limit=1, order='number desc'
+            ).number) + 1
+            if not last_act_number:
+                last_act_number = 1
+            year = datetime.date.today().year
+            name = f"{operation_type.document_name} #{year}/000{last_act_number}"
+            self.name = name
+
