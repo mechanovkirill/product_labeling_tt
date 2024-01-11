@@ -9,12 +9,6 @@
                     <sheet>
                         <widget name="web_ribbon" title="Отсутствует" bg_color="bg-danger"
                                 invisible="state != 'Товар был разделен'"/>
-<!--                        <header>-->
-<!--                            <button name="action_move_labeled_product" type="object" string="Перемещение"-->
-<!--                                    class="oe_highlight"/>-->
-<!--                            <button name="action_sale_labeled_product" type="object" string="Продажа"-->
-<!--                                    class="oe_highlight"/>-->
-<!--                        </header>-->
                         <field name="pl_product_id"
                                style="font-size:200%; margin-bottom:10px"
                                readonly="1"/>
@@ -32,7 +26,6 @@
                                 <page string="Приходы/Расходы">
                                     <field name="pl_move_ids" readonly="1">
                                         <tree string="Приходы/Расходы">
-                                            <!--                                            <button name="action_open_pl_move" type="object" string="Open" class="oe_highlight"/>-->
                                             <field name="date"/>
                                             <field name="name"/>
                                             <field name="quantity"/>
@@ -69,8 +62,6 @@
                     <field name="pl_warehouse_id"/>
                     <field name="state"/>
                     <field name="profit"/>
-<!--                    <button name="action_move_labeled_product" type="object" string="Перемещение" class="oe_highlight"/>-->
-<!--                    <button name="action_sale_labeled_product" type="object" string="Продажа" class="oe_highlight"/>-->
                 </tree>
             </field>
         </record>
