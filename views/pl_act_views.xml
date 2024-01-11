@@ -8,9 +8,11 @@
                 <form string="product_labeling.act">
                     <sheet>
                         <header>
-                             <button name="action_confirm_act" type="object" string="Confirm" class="oe_highlight" invisible="state != 'draft'"/>
-                             <button name="action_reset_act_to_draft" type="object" string="Reset to Draft" invisible="state == 'draft'"/>
-                             <field name="state" widget="statusbar" statusbar_visible="draft, confirmed, canceled"/>
+                            <button name="action_confirm_act" type="object" string="Confirm" class="oe_highlight"
+                                    invisible="state != 'draft'"/>
+                            <button name="action_reset_act_to_draft" type="object" string="Reset to Draft"
+                                    invisible="state == 'draft'"/>
+                            <field name="state" widget="statusbar" statusbar_visible="draft, confirmed, canceled"/>
                         </header>
                         <group>
                             <group>
@@ -18,18 +20,18 @@
                                 <field name="date" readonly="state == 'confirmed'"/>
                                 <field name="name" readonly="state == 'confirmed'"/>
                                 <field name="pl_operation_type_id" readonly="state == 'confirmed'"/>
-                                <field name="pl_product_id" invisible="operation_type != 'Покупка' or state != 'draft'" readonly="state == 'confirmed'"/>
-                                <field name="pl_labeled_product_id" invisible="operation_type == 'Покупка' and state == 'draft'" readonly="state == 'confirmed'"/>
-                                <field name="quantity" readonly="state == 'confirmed'"/>
-                                <field name="current_pl_warehouse_id" string="Текущий склад" invisible="operation_type == 'Покупка'" readonly="state == 'confirmed'"/>
+                                <field name="current_pl_warehouse_id" string="Текущий склад"
+                                       invisible="operation_type == 'Покупка'" readonly="state == 'confirmed'"/>
                                 <field name="to_pl_warehouse_id" readonly="state == 'confirmed'"/>
                             </group>
 
                             <notebook>
+                                <page name="Товары">
+                                    <field name="pl_act_product_binder" readonly="state == 'confirmed'"/>
+                                </page>
                                 <page name="Приходы/Расходы">
                                     <field name="pl_move_ids" readonly="state == 'confirmed'">
                                         <tree editable="bottom" string="Приходы/Расходы">
-<!--                                            <button name="action_open_pl_move" type="object" string="Open" class="oe_highlight"/>-->
                                             <field name="name"/>
                                             <field name="debit"/>
                                             <field name="credit"/>
@@ -39,10 +41,10 @@
                             </notebook>
                         </group>
                     </sheet>
-                     <div class="oe_chatter">
-                            <field name="message_follower_ids" widget="mail_followers"/>
-                            <field name="message_ids" widget="mail_thread"/>
-                        </div>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>
@@ -53,9 +55,8 @@
             <field name="arch" type="xml">
                 <tree string="act">
                     <field name="name"/>
-                    <field name="pl_labeled_product_id"/>
                     <field name="pl_operation_type_id"/>
-                    <field name="quantity"/>
+                    <field name="pl_act_product_binder" widget="many2many_tags"/>
                     <field name="state"/>
                 </tree>
             </field>

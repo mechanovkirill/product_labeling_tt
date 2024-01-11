@@ -53,13 +53,13 @@ class LabeledProduct(models.Model):
     mark = fields.Char(size=30, string="Маркировка")
     pl_warehouse_id = fields.Many2one('product_labeling.warehouse', string="Склад")
     profit = fields.Float(string="Прибыль", compute='_compute_profit')
-    pl_act_ids = fields.One2many('product_labeling.act', inverse_name='pl_labeled_product_id')
+    pl_act_ids = fields.Many2many('product_labeling.act')
     pl_move_ids = fields.Many2many('product_labeling.move', 'pl_labeled_product_id', compute='_compute_pl_move_ids')
 
     def name_get(self):
         res = []
         for record in self:
-            name = f"{record.pl_product_id.name} #{record.mark} {record.pl_warehouse_id}"
+            name = f"{record.pl_product_id.name} #{record.mark} {record.pl_warehouse_id.name}"
             res.append((record.id, name))
         return res
 
@@ -92,7 +92,6 @@ class LabeledProduct(models.Model):
             # if children:
             #     for child in children:
             #         profit += child.profit
-
             record.profit = profit
 
     @api.depends('state', 'parent_id', 'pl_warehouse_id')

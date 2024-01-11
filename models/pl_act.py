@@ -15,14 +15,17 @@ class PLAct(models.Model):
     pl_operation_type_id = fields.Many2one('product_labeling.operation_type', string='Тип операции')
     operation_type = fields.Char(related='pl_operation_type_id.name')
 
-    pl_product_id = fields.Many2one('product_labeling.product', string="Товар")
-    pl_labeled_product_id = fields.Many2one('product_labeling.labeled_product', string="Товар")
-    quantity = fields.Integer(string="Количество", required=True)
+    pl_act_product_binder = fields.One2many('product_labeling.act_product_binder', 'pl_act_id')
+    # pl_product_id = fields.Many2one('product_labeling.product', string="Товар")
+    # pl_labeled_product_id = fields.Many2one('product_labeling.labeled_product', string="Товар")
+    # quantity = fields.Integer(string="Количество", required=True)
 
     state = fields.Selection(
         [('draft', 'Draft'), ('confirmed', 'Confirmed'), ('canceled', 'Canceled')], default='draft')
+
     current_pl_warehouse_id = fields.Many2one('product_labeling.warehouse', string='Применить для товаров со склада')
     to_pl_warehouse_id = fields.Many2one('product_labeling.warehouse', string='Назначить новый склад')
+
     pl_move_ids = fields.One2many('product_labeling.move', inverse_name='pl_act_id')
 
     def action_reset_act_to_draft(self):
@@ -123,9 +126,9 @@ class PLAct(models.Model):
             'target': 'new',
         }
 
-    @api.onchange('pl_labeled_product_id')
-    def onchange_pl_labeled_product_id(self):
-        labeled_prod = self.pl_labeled_product_id
-        if labeled_prod:
-            self.quantity = labeled_prod.quantity
-            self.current_pl_warehouse_id = labeled_prod.pl_warehouse_id
+    # @api.onchange('pl_labeled_product_id')
+    # def onchange_pl_labeled_product_id(self):
+    #     labeled_prod = self.pl_labeled_product_id
+    #     if labeled_prod:
+    #         self.quantity = labeled_prod.quantity
+    #         self.current_pl_warehouse_id = labeled_prod.pl_warehouse_id
