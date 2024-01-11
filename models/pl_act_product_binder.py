@@ -28,7 +28,7 @@ class PLActProductBinder(models.Model):
     def name_get(self):
         res = []
         for record in self:
-            name = f"111111{record.pl_product_id.name if record.pl_product_id else record.pl_labeled_product_id.name}"
+            name = f"{record.pl_product_id.name if record.pl_product_id else record.pl_labeled_product_id.name}"
             res.append((record.id, name))
         return res
 

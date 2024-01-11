@@ -78,6 +78,7 @@ class PLAct(models.Model):
                 'pl_act_ids': [(4, act.id, 0)]
             })
             binder.pl_labeled_product_id = labeled_product.id
+            binder.name = f"{binder.pl_labeled_product_id.name}"
             for move in binder.pl_move_ids:
                 move.pl_labeled_product_id = labeled_product.id
                 move.quantity = binder.quantity
@@ -117,21 +118,18 @@ class PLAct(models.Model):
     @api.onchange('pl_operation_type_id')
     def onchange_pl_operation_type_id(self):
         operation_type = self.pl_operation_type_id
+        last_act_number = 0
         if operation_type:
             last_act_number = int(self.env['product_labeling.act'].search(
                 [
                     ('pl_operation_type_id', '=', operation_type.id),
                     ('state', '=', 'confirmed')
                 ],
-                limit=1, order='number desc'
+                limit=1, order='number'
             ).number)
-            if not last_act_number:
-                last_act_number = 1
-            else:
-                last_act_number += 1
-            year = datetime.date.today().year
-            name = f"{operation_type.document_name} #{year}/000{last_act_number}"
-            self.name = name
-            print(last_act_number)
-            self.write({'number': last_act_number})
+        last_act_number += 1
+        year = datetime.date.today().year
+        name = f"{operation_type.document_name} #{year}/000{last_act_number}"
+        self.name = name
+        self.number = last_act_number
 
