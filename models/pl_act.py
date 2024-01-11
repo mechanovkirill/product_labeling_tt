@@ -95,6 +95,8 @@ class PLAct(models.Model):
             labeled_product_new.quantity = act.quantity
             labeled_product_new.pl_warehouse_id = act.to_pl_warehouse_id
             labeled_product_new.state = act.pl_operation_type_id.product_state
+            for move in act.pl_move_ids:
+                move.pl_labeled_product_id = labeled_product_new.id
 
             # create remains product
             labeled_product_remain = act.pl_labeled_product_id.copy()
