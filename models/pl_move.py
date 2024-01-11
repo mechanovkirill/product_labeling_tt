@@ -8,6 +8,7 @@ class PLMove(models.Model):
 
     pl_labeled_product_id = fields.Many2one('product_labeling.labeled_product')
     pl_act_id = fields.Many2one('product_labeling.act')
+    pl_act_product_binder = fields.Many2one('product_labeling.act_product_binder')
     parent_act_state = fields.Selection(related='pl_act_id.state')
     date = fields.Date(related='pl_act_id.date')
     quantity = fields.Integer(string='Кол-во')

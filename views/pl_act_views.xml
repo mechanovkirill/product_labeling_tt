@@ -29,7 +29,7 @@
                                 <page name="Товары">
                                     <field name="pl_act_product_binder" readonly="state == 'confirmed'"/>
                                 </page>
-                                <page name="Приходы/Расходы">
+                                <page name="Приходы/Расходы" invisible="state == 'draft'">
                                     <field name="pl_move_ids" readonly="state == 'confirmed'">
                                         <tree editable="bottom" string="Приходы/Расходы">
                                             <field name="name"/>

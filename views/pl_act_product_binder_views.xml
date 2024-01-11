@@ -2,6 +2,39 @@
 <odoo>
     <data>
 
+        <record id="roduct_labeling_act_product_binder_view_form" model="ir.ui.view">
+            <field name="name">roduct_labeling_act_product_binder.form</field>
+            <field name="model">product_labeling.act_product_binder</field>
+            <field name="arch" type="xml">
+                <form string="roduct_labeling_act_product_binder">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="parent_act_state" invisible="1"/>
+                                <field name="operation_type" invisible="1"/>
+                                <field name="pl_product_id"
+                                       invisible="operation_type != 'Покупка' or parent_act_state != 'draft'"/>
+                                <field name="pl_labeled_product_id"
+                                       invisible="operation_type == 'Покупка' and parent_act_state == 'draft'"/>
+                                <field name="quantity"/>
+                            </group>
+                            <notebook>
+                                <page>
+                                    <field name="pl_move_ids" readonly="parent_act_state == 'confirmed'">
+                                        <tree editable="bottom" string="Приходы/Расходы">
+                                            <field name="name"/>
+                                            <field name="debit"/>
+                                            <field name="credit"/>
+                                        </tree>
+                                    </field>
+                                </page>
+                            </notebook>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
         <record id="product_labeling_act_product_binder_view_tree" model="ir.ui.view">
             <field name="name">product_labeling_act_product_binder.tree</field>
             <field name="model">product_labeling.act_product_binder</field>
@@ -14,8 +47,11 @@
                     <field name="pl_labeled_product_id"
                            invisible="operation_type == 'Покупка' and parent_act_state == 'draft'"/>
                     <field name="quantity"/>
-                    <field name="debit"/>
-                    <field name="credit"/>
+                    <field name="debit" readonly="1"/>
+                    <field name="credit" readonly="1"/>
+                    <button name="action_add_profit_expense" type="object" string="Добавить Приход/Расход"
+                            class="oe_highlight"
+                            invisible="parent_act_state != 'draft'"/>
                 </tree>
             </field>
         </record>

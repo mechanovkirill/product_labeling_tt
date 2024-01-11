@@ -17,8 +17,7 @@ class PLAct(models.Model):
 
     pl_act_product_binder = fields.One2many('product_labeling.act_product_binder', 'pl_act_id')
     # pl_product_id = fields.Many2one('product_labeling.product', string="Товар")
-    # pl_labeled_product_id = fields.Many2one('product_labeling.labeled_product', string="Товар")
-    # quantity = fields.Integer(string="Количество", required=True)
+    pl_labeled_product_id = fields.Many2many('product_labeling.labeled_product', string="Товар")
 
     state = fields.Selection(
         [('draft', 'Draft'), ('confirmed', 'Confirmed'), ('canceled', 'Canceled')], default='draft')
@@ -34,10 +33,10 @@ class PLAct(models.Model):
     def action_confirm_act(self):
         if not self.name:
             raise UserError('Документ должен иметь имя')
-        if not self.quantity:
-            raise UserError('Укажите количество единиц товара')
         if not self.to_pl_warehouse_id:
             raise UserError('Укажите склад в который перемещен товар')
+        if not self.pl_act_product_binder:
+            raise UserError('Добавьте товары')
 
         if self.pl_operation_type_id.name == 'Покупка':
             self._purchase_act_confirmation(self)
@@ -59,29 +58,22 @@ class PLAct(models.Model):
         return self.return_act_window_new(self.id)
 
     def _purchase_act_confirmation(self, act):
-        if not act.pl_product_id:
-            raise UserError('Выберите приобретаемый товар')
+        for binder in act.pl_act_product_binder:
+            if not binder.pl_product_id:
+                raise UserError('Выберите приобретаемый товар')
 
-        labeled_product = self.env['product_labeling.labeled_product'].search([
-            ('pl_product_id', '=', act.pl_product_id.id),
-            ('pl_warehouse_id', '=', act.to_pl_warehouse_id.id),
-            ('state', '=', act.pl_operation_type_id.product_state),
-        ], limit=1)
-        if not labeled_product:
             labeled_product = self.env['product_labeling.labeled_product'].create({
-                'pl_product_id': act.pl_product_id.id,
-                'mark': act.pl_product_id.id,
-                'quantity': act.quantity,
+                'pl_product_id': binder.pl_product_id.id,
+                'mark': binder.pl_product_id.id,
+                'quantity': binder.quantity,
                 'pl_warehouse_id': act.to_pl_warehouse_id.id,
                 'state': act.pl_operation_type_id.product_state,
-                'name': f"{act.pl_product_id.name} #{act.pl_product_id.id} {act.to_pl_warehouse_id}"
+                'name': f"{act.pl_product_id.name} #{act.pl_product_id.id} {act.to_pl_warehouse_id.name}"
             })
-        else:
-            labeled_product.quantity += act.quantity
 
-        self.pl_labeled_product_id = labeled_product.id
-        for move in act.pl_move_ids:
-            move.pl_labeled_product_id = labeled_product.id
+            self.pl_labeled_product_id = [4, labeled_product.id, 0]
+            for move in act.pl_move_ids:
+                move.pl_labeled_product_id = labeled_product.id
 
         act.state = 'confirmed'
 
@@ -125,13 +117,6 @@ class PLAct(models.Model):
             'res_id': id_,
             'target': 'new',
         }
-
-    # @api.onchange('pl_labeled_product_id')
-    # def onchange_pl_labeled_product_id(self):
-    #     labeled_prod = self.pl_labeled_product_id
-    #     if labeled_prod:
-    #         self.quantity = labeled_prod.quantity
-    #         self.current_pl_warehouse_id = labeled_prod.pl_warehouse_id
 
     @api.onchange('pl_operation_type_id')
     def onchange_pl_operation_type_id(self):
