@@ -104,9 +104,13 @@ class PLAct(models.Model):
             if binder.quantity == binder.pl_labeled_product_id.quantity:
                 binder.pl_labeled_product_id.pl_warehouse_id = act.to_pl_warehouse_id
                 binder.pl_labeled_product_id.state = act.pl_operation_type_id.product_state
+                binder.pl_labeled_product_id.name = f"{binder.pl_labeled_product_id.pl_product_id.name} " \
+                                                    f"#{binder.pl_labeled_product_id.mark} {act.to_pl_warehouse_id.name}"
+                binder.pl_labeled_product_id.pl_act_ids = [(4, act.id, 0)]
                 for move in binder.pl_move_ids:
                     move.pl_labeled_product_id = binder.pl_labeled_product_id.id
                     move.quantity = binder.quantity
+
             elif binder.quantity < binder.pl_labeled_product_id.quantity:
                 # create new product
                 labeled_product_new = binder.pl_labeled_product_id.copy()
@@ -114,13 +118,25 @@ class PLAct(models.Model):
                 labeled_product_new.quantity = binder.quantity
                 labeled_product_new.pl_warehouse_id = act.to_pl_warehouse_id
                 labeled_product_new.state = act.pl_operation_type_id.product_state
+                labeled_product_new.name = f"{labeled_product_new.pl_product_id.name} " \
+                                           f"#{labeled_product_new.mark} {act.to_pl_warehouse_id.name}"
+                labeled_product_new.pl_act_ids = [(4, act.id, 0)]
                 for move in binder.pl_move_ids:
                     move.pl_labeled_product_id = labeled_product_new.id
                     move.quantity = binder.quantity
 
                 # create remains product
-                labeled_product_remain = binder.pl_labeled_product_id.copy()
-                labeled_product_remain.quantity -= binder.quantity
+                labeled_product_remain = self.env['product_labeling.labeled_product'].create({
+                    'pl_product_id': binder.pl_labeled_product_id.pl_product_id.id,
+                    'mark': binder.pl_labeled_product_id.pl_product_id.id,
+                    'quantity': binder.pl_labeled_product_id.quantity - binder.quantity,
+                    'pl_warehouse_id': binder.pl_labeled_product_id.pl_warehouse_id.id,
+                    'state': binder.pl_labeled_product_id.state,
+                    'name': f"{binder.pl_labeled_product_id.pl_product_id.name} "
+                            f"#{binder.pl_labeled_product_id.pl_product_id.id} "
+                            f"{binder.pl_labeled_product_id.pl_warehouse_id.name}",
+                    'pl_act_ids': binder.pl_labeled_product_id.pl_act_ids.ids
+                })
 
                 # update parent product
                 binder.pl_labeled_product_id.state = 'Товар был разделен'
@@ -164,4 +180,3 @@ class PLAct(models.Model):
             name = f"{operation_type.document_name} #{year}/000{last_act_number}"
             self.name = name
             self.number = last_act_number
-
